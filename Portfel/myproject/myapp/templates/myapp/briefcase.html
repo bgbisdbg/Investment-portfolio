@@ -1,0 +1,52 @@
+{% extends 'myapp/base.html' %}
+
+{% block b %}
+        <table>
+                <thead>
+                    <tr>
+                        <th>Монета</th>
+                        <th>Купленный Объём</th>
+                        <th>Средняя цена</th>
+                        <th>Текущая цена монеты</th>
+                        <th>Изм. за 24ч</th>
+                        <th>Количество купленных монет</th>
+                        <th>Отклонение от средней цены</th>
+                        <th>Текущая Стоимость</th>
+                        <th>Прибыль</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Здесь должны быть строки с данными о монетах -->
+
+                        <tr>
+                            <td>AVAX</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+
+                </tbody>
+            </table>
+                <div class="summary-table">
+        <table>
+            <tbody>
+                <tr class="total-row">
+                    <td colspan="2">Цена портфеля:</td>
+                    <td>0</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="2">Прибыль по портфелю:</td>
+                    <td>0</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="2">Прибыль в рублях:</td>
+                    <td>0</td>
+                </tr>
+            </tbody>
+        </table>
+{% endblock %}
