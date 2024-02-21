@@ -118,32 +118,48 @@
 </head>
 <body>
     <div class="navbar">
-        <a href="{% url 'index' %}">Главная</a>
-        <a href="{% url 'briefcase' %}">Мой портфель</a>
-        <a href="#news">Новости</a>
-        <a href="#currency">Таблица валют</a>
-        <a href="{% url 'register' %}">Регистрация</a>
-        <a href="#">Войти</a>
-    </div>
-    <div class="news-ticker">
+        <!-- Ваш код -->
+        {% if user.is_authenticated %}
+            <div class="navbar">
+                {{ user.username }}
+                <a href="{% url 'myapp:index' %}">Главная</a>
+                <a href="{% url 'myapp:briefcase' %}">Мой портфель</a>
+                <a href="#news">Новости</a>
+                <a href="#currency">Таблица валют</a>
+                <a href="{% url 'users:logout' %}" style="color: white; margin-left: 10px;">Выйти</a>
+            </div>
+        <div class="news-ticker">
         <span>BTC/USDT: 52315.44000000 +1.28% - ETH/USDT: 2919.41000000 USDT - USDT: 91.10 - S&P500Index: 5005.57</span>
-    </div>
-            <h1>Главная страница</h1>
+    <div>
+            <h1> </h1>
             {% block a %}
                 <!-- Здесь будет вставлен контент блока a из дочерних шаблонов -->
             {% endblock %}
     </div>
 
-            <h1>Мой портфель</h1>
+            <h1> </h1>
             {% block b %}
                 <!-- Здесь будет вставлен контент блока b из дочерних шаблонов -->
             {% endblock %}
     </div>
-            <h1>Регистрация</h1>
+        {% else %}
+
+    <div class="navbar">
+        <a href="{% url 'users:register' %}">Регистрация</a>
+        <a href="{% url 'users:login' %}">Войти</a>
+    </div>
+    <div class="news-ticker">
+        <span>BTC/USDT: 52315.44000000 +1.28% - ETH/USDT: 2919.41000000 USDT - USDT: 91.10 - S&P500Index: 5005.57</span>
+             <h1> </h1>
             {% block c %}
                 <!-- Здесь будет вставлен контент блока b из дочерних шаблонов -->
             {% endblock %}
-    </div>
-    </div>
+
+            <h1> </h1>
+            {% block d %}
+                <!-- Здесь будет вставлен контент блока b из дочерних шаблонов -->
+            {% endblock %}
+
+        {% endif %}
 </body>
 </html>

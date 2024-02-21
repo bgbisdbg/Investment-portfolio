@@ -3,8 +3,6 @@ from django.views.generic import TemplateView
 from binance import Client
 from tradingview_ta import TA_Handler, Interval, Exchange
 
-from myproject.settings import api_key, secret_key
-
 
 class IndexView(TemplateView):
     template_name = 'myapp/index.html'
@@ -33,7 +31,3 @@ class IndexView(TemplateView):
 
 class BrifcaseView(TemplateView):
     template_name = 'myapp/briefcase.html'
-
-
-class RegisterView(TemplateView):
-    template_name = 'myapp/register.html'

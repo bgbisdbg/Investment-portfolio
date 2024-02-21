@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'myapp',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -127,6 +128,5 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-#Binance
-api_key = 'mLwspKZ4GP7ymF84Zjvna4LgyBqGlxHq9YhvsovbFbHmo1X45l6iVcv8T5oZezAX'
-secret_key = 'oUqGkcm9aVdHRLlZn0vou7OG0jis0upy1OfLqXeesrqHq0davGpnYtdrhQRUO4dT'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
