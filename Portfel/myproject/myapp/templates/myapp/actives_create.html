@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить актив</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="number"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+        button[type="submit"] {
+            margin-top: 20px;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #0b0c0d;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button[type="submit"]:hover {
+            background-color: #0b0c0d;
+        }
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #0b0c0d;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        a:hover {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Добавить актив</h1>
+        <form method="post" action="{% url 'myapp:actives-create-api' %}">
+            {% csrf_token %}
+            <div>
+                <label for="active_name">Название актива:</label>
+                <input type="text" id="active_name" name="active_name" required>
+            </div>
+             <div>
+                <label for="pair_id">Валютная пара:</label>
+                <select id="pair_id" name="pair_id" required>
+                    {% for pair in currency_pairs %}
+                        <option value="{{ pair.id }}">{{ pair.pair_mame }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <!-- Добавьте другие поля, если это необходимо -->
+            <button type="submit">Добавить актив</button>
+        </form>
+        <!-- Кнопка "Вернуться в портфель" -->
+        <a href="{% url 'myapp:briefcase' %}">Вернуться в портфель</a>
+    </div>
+</body>
+</html>

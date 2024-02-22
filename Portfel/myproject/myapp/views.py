@@ -1,7 +1,11 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
-from binance import Client
-from tradingview_ta import TA_Handler, Interval, Exchange
+from rest_framework import generics
+from tradingview_ta import TA_Handler, Interval
+
+from myapp import serializers
+from myapp.models import CurrencyPairsModel, ActivesModel
+from myapp.serializers import ActivesModelSerializer
 
 
 class IndexView(TemplateView):
@@ -31,3 +35,16 @@ class IndexView(TemplateView):
 
 class BrifcaseView(TemplateView):
     template_name = 'myapp/briefcase.html'
+
+
+# class App(TemplateView):
+#     template_name = 'myapp/actives_create.html'
+
+def actives_create(request):
+    currency_pairs = CurrencyPairsModel.objects.all()
+    return render(request, 'myapp/actives_create.html', {'currency_pairs': currency_pairs})
+
+
+class ActivesCreateAPIView(generics.CreateAPIView):
+    queryset = ActivesModel.objects.all()
+    serializer_class = ActivesModelSerializer
