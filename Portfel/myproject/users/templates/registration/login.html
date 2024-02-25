@@ -52,15 +52,31 @@
 </head>
 <div class="container">
     <h1>Авторизация</h1>
-    <form method="post">
-        {% csrf_token %}
-        <label for="username">Имя пользователя:</label>
-        <input type="text" id="username" name="username" required>
+    <form action="{% url 'users:login' %}" method="post">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
 
-        <label for="password">Пароль:</label>
-        <input type="password" id="password" name="password" required>
+    <label class="small mb-1" for="{{ form.username.id_for_label }}">Имя пользователя</label>
+    {{ form.username }}
+    {% if form.username.errors %}
+        <div class="alert alert-danger">
+            {{ form.username.errors }}
+        </div>
+    {% endif %}
 
-        <button type="submit">Войти</button>
-    </form>
+    <label class="small mb-1" for="{{ form.password.id_for_label }}">Пароль</label>
+    {{ form.password }}
+    {% if form.password.errors %}
+        <div class="alert alert-danger">
+            {{ form.password.errors }}
+        </div>
+    {% endif %}
+
+    <button type="submit">Войти</button>
+</form>
 </div>
 {% endblock %}

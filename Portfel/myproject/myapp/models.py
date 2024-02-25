@@ -58,7 +58,7 @@ class ActivesModel(models.Model):
         super().save(*args, **kwargs)
 
 
-class BriefcaseModel(models.Model):
+class HistoryModel(models.Model):
     user_id = models.ForeignKey('auth.user', on_delete=models.CASCADE)
     active_id = models.ForeignKey('ActivesModel', on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -66,4 +66,5 @@ class BriefcaseModel(models.Model):
     action_id = models.ForeignKey('ActionModel', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.action_id.name
+        return self.active_id.active_name
+

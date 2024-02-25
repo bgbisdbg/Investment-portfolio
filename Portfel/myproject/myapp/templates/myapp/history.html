@@ -1,0 +1,31 @@
+{% extends 'myapp/base.html' %}
+
+{% block b %}
+     <table>
+        <thead>
+          <tr>
+            <th>Актив</th>
+            <th>Цена</th>
+            <th>Количество</th>
+            <th>Действие</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for record in object_list %}
+            <tr>
+              <td>{{ record.active_id.active_name }}</td> <!-- Предполагается, что у ActivesModel есть поле name -->
+              <td>{{ record.price }}</td>
+              <td>{{ record.count }}</td>
+              <td>{{ record.action_id.action_name }}</td> <!-- Предполагается, что у ActionModel есть поле name -->
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="7">Нет истории активов.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+</div>
+<!-- Кнопка "Добавить актив" -->
+<a href="{% url 'myapp:actives_create' %}" class="btn btn-primary">Добавить актив</a>
+{% endblock %}

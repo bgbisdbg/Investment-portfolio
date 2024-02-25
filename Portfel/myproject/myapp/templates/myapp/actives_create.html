@@ -68,25 +68,21 @@
 <body>
     <div class="container">
         <h1>Добавить актив</h1>
-        <form method="post" action="{% url 'myapp:actives-create-api' %}">
+        <form method="post">
             {% csrf_token %}
-            <div>
-                <label for="active_name">Название актива:</label>
-                <input type="text" id="active_name" name="active_name" required>
+            {{ form.non_field_errors }}
+            <div class="form-group">
+                {{ form.active_name.errors }}
+                <label for="{{ form.active_name.id_for_label }}">Название актива:</label>
+                {{ form.active_name }}
             </div>
-             <div>
-                <label for="pair_id">Валютная пара:</label>
-                <select id="pair_id" name="pair_id" required>
-                    {% for pair in currency_pairs %}
-                        <option value="{{ pair.id }}">{{ pair.pair_mame }}</option>
-                    {% endfor %}
-                </select>
+            <div class="form-group">
+                {{ form.pair_id.errors }}
+                <label for="{{ form.pair_id.id_for_label }}">Выберите пару:</label>
+                {{ form.pair_id }}
             </div>
-            <!-- Добавьте другие поля, если это необходимо -->
-            <button type="submit">Добавить актив</button>
+            <button type="submit">Создать</button>
         </form>
-        <!-- Кнопка "Вернуться в портфель" -->
-        <a href="{% url 'myapp:briefcase' %}">Вернуться в портфель</a>
     </div>
 </body>
 </html>
