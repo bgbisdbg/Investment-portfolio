@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Sum
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, CreateView
@@ -60,14 +61,24 @@ def actives_create(request):
         else:
             pass
 
-        new_active = ActivesModel.objects.create(
+        # Проверяем, существует ли актив с таким именем
+        active, created = ActivesModel.objects.get_or_create(
             active_name=active_name,
-            pair_id=pair,
-            screener_id=screener_id,
-            source_id=source_id,
+            defaults={
+                'pair_id': pair,
+                'screener_id': screener_id,
+                'source_id': source_id,
+            }
         )
-        new_active.save()
-        return redirect('myapp:history_created', active_id=new_active.active_id)
+
+        if not created:
+            # Если актив уже существует, обновляем его поля, если нужно
+            active.pair_id = pair
+            active.screener_id = screener_id
+            active.source_id = source_id
+            active.save()
+
+        return redirect('myapp:history_created', active_id=active.active_id)
     else:
         form = ActiveCreatedForm()
     return render(request, 'myapp/actives_create.html', {'form': form})
@@ -96,3 +107,19 @@ def history_created(request, active_id):
     else:
         form = HistoryCreatedForm()
     return render(request, 'myapp/history_created.html', {'form': form, 'active_id': active_id})
+
+
+class BreafceseListView(ListView):
+    model = HistoryModel
+    template_name = 'myapp/brefcese.html'
+
+    def get_queryset(self):
+        user = self.request.user.id
+
+        result = HistoryModel.objects.filter(user_id_id=user).values('user_id_id', 'active_id_id').annotate(
+            average_price=Sum('price') / Sum('count'),
+            sum_price=Sum('price'),
+            total_count=Sum('count')
+        )
+
+        return result
