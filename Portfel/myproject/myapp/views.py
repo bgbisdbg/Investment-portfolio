@@ -116,6 +116,7 @@ class BreafceseListView(ListView):
     def get_queryset(self):
         user = self.request.user.id
 
+
         result = HistoryModel.objects.filter(user_id_id=user).values('user_id_id', 'active_id_id').annotate(
             average_price=Sum('price') / Sum('count'),
             sum_price=Sum('price'),
