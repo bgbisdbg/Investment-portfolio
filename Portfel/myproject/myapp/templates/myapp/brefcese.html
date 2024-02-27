@@ -20,13 +20,13 @@
 </head>
 <body>
     <h1>Активы</h1>
-    <table>
+      <table>
         <thead>
             <tr>
                 <th>Название актива</th>
                 <th>Объём</th>
                 <th>Средняя цена</th>
-                <th>Изменение цены</th>
+                <th>Текущая цена</th>
                 <th>Количество</th>
                 <th>Стоимость</th>
                 <th>Прибыль</th>
@@ -35,12 +35,12 @@
         <tbody>
             {% for active in object_list %}
             <tr>
-                <td>{{ active.active_id_id }}</td>
+                <td>{{ active.active_id__active_name }}</td>
+                <td>{{ active.value }}</td>
+                <td>{{ active.weighted_average_price }}</td>
+                <td>{{ active.active_id__now_price }}</td>
                 <td>{{ active.total_count }}</td>
-                <td>{{ active.average_price }}</td>
-                <td>{{ active.price_change }}</td>
-                <td>{{ active.total_count }}</td>
-                <td>{{ active.cost }}</td>
+                <td>{{ active.current_value }}</td>
                 <td>{{ active.profit }}</td>
             </tr>
             {% empty %}
@@ -49,7 +49,7 @@
             </tr>
             {% endfor %}
         </tbody>
-    </table>
+      </table>
 </body>
 </html>
 </body>

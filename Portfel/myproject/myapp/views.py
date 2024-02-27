@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Sum
+from django.db.models import Sum, ExpressionWrapper, F, Avg
+from django.forms import DecimalField
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, CreateView
@@ -116,10 +117,16 @@ class BreafceseListView(ListView):
     def get_queryset(self):
         user = self.request.user.id
 
-        result = HistoryModel.objects.filter(user_id_id=user).values('user_id_id', 'active_id_id').annotate(
-            average_price=Sum('price') / Sum('count'),
-            sum_price=Sum('price'),
-            total_count=Sum('count')
+        result = HistoryModel.objects.filter(user_id_id=user).values(
+            'user_id_id',
+            'active_id__active_name',
+            'active_id__now_price'
+        ).annotate(
+            weighted_average_price=Sum(F('price') * F('count')) / Sum('count'),
+            total_count=Sum('count'),
+            value=Sum(F('price')*F('count')),
+            current_value=F('active_id__now_price')*Sum(F('count')),
+            profit=F('current_value') - F('value'),
         )
 
         return result
