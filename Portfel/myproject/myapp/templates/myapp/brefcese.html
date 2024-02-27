@@ -1,22 +1,11 @@
+{% extends 'myapp/base.html' %}
+
+{% block d %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Активы</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
 </head>
 <body>
     <h1>Активы</h1>
@@ -26,7 +15,8 @@
                 <th>Название актива</th>
                 <th>Объём</th>
                 <th>Средняя цена</th>
-                <th>Изменение цены</th>
+                <th>Текущая цена</th>
+                <th>изм.24ч.</th>
                 <th>Количество</th>
                 <th>Стоимость</th>
                 <th>Прибыль</th>
@@ -35,13 +25,14 @@
         <tbody>
             {% for active in object_list %}
             <tr>
-                <td>{{ active.active_id_id }}</td>
-                <td>{{ active.total_count }}</td>
-                <td>{{ active.average_price }}</td>
-                <td>{{ active.price_change }}</td>
-                <td>{{ active.total_count }}</td>
-                <td>{{ active.cost }}</td>
-                <td>{{ active.profit }}</td>
+                <td>{{ active.active_id__active_name }}</td>
+                <td>{{ active.value|floatformat:2 }}</td>
+                <td>{{ active.weighted_average_price|floatformat:2 }}</td>
+                <td>{{ active.active_id__now_price|floatformat:2 }}</td>
+                <td> ХУЙ </td>
+                <td>{{ active.total_count|floatformat:2 }}</td>
+                <td>{{ active.current_value|floatformat:2 }}</td>
+                <td>{{ active.profit|floatformat:2 }}</td>
             </tr>
             {% empty %}
             <tr>
@@ -52,5 +43,4 @@
     </table>
 </body>
 </html>
-</body>
-</html>
+{% endblock %}

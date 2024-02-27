@@ -1,5 +1,4 @@
 from http import HTTPStatus
-
 from django.test import TestCase
 from django.urls import reverse
 
@@ -11,8 +10,4 @@ class IndexViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTemplateUsed(response, 'myapp/index.html')
-
-
-
-
 

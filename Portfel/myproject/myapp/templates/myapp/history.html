@@ -1,31 +1,35 @@
 {% extends 'myapp/base.html' %}
 
 {% block b %}
-     <table>
+<div>
+    <h1>История</h1>
+    <table>
         <thead>
-          <tr>
-            <th>Актив</th>
-            <th>Цена</th>
-            <th>Количество</th>
-            <th>Действие</th>
-          </tr>
+            <tr>
+                <th>Дата</th>
+                <th>Актив</th>
+                <th>Цена</th>
+                <th>Количество</th>
+                <th>Действие</th>
+            </tr>
         </thead>
         <tbody>
-          {% for record in object_list %}
+            {% for record in object_list %}
             <tr>
-              <td>{{ record.active_id.active_name }}</td> <!-- Предполагается, что у ActivesModel есть поле name -->
-              <td>{{ record.price }}</td>
-              <td>{{ record.count }}</td>
-              <td>{{ record.action_id.action_name }}</td> <!-- Предполагается, что у ActionModel есть поле name -->
+                <td>{{ record.datetime }}</td>
+                <td>{{ record.active_id.active_name }}</td> <!-- Предполагается, что у ActivesModel есть поле name -->
+                <td>{{ record.price }}</td>
+                <td>{{ record.count }}</td>
+                <td>{{ record.action_id.action_name }}</td> <!-- Предполагается, что у ActionModel есть поле name -->
             </tr>
-          {% empty %}
+            {% empty %}
             <tr>
-              <td colspan="7">Нет истории активов.</td>
+                <td colspan="5">Нет истории активов.</td>
             </tr>
-          {% endfor %}
+            {% endfor %}
         </tbody>
-      </table>
+    </table>
+    <!-- Кнопка "Добавить актив" -->
+    <a href="{% url 'myapp:actives_create' %}" class="btn btn-primary">Добавить актив</a>
 </div>
-<!-- Кнопка "Добавить актив" -->
-<a href="{% url 'myapp:actives_create' %}" class="btn btn-primary">Добавить актив</a>
 {% endblock %}

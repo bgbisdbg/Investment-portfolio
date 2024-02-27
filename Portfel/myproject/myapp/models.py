@@ -1,6 +1,6 @@
 from django.db import models
 from tradingview_ta import TA_Handler, Interval
-from myproject import settings
+
 
 
 class ActionModel(models.Model):
@@ -64,6 +64,7 @@ class HistoryModel(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     count = models.DecimalField(max_digits=10000000, decimal_places=2)
     action_id = models.ForeignKey('ActionModel', on_delete=models.CASCADE)
+    datetime = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.active_id.active_name
