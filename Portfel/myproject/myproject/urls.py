@@ -17,8 +17,15 @@ from django.contrib import admin
 from django.urls import path, include
 
 
+
+from myapp.views import IndexAPIView, HistoryAPIView, ActivesCreateAPIView, HistoryCreatedView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('myapp.urls', namespace='myapp')),
     path("users/", include('users.urls', namespace='users')),
+    path('api/index/', IndexAPIView.as_view(), name='index-api'),
+    path('api/history/', HistoryAPIView.as_view(), name='history-api'),
+    path('api/actives/create/', ActivesCreateAPIView.as_view(), name='actives-create'),
+    path('history/created/<int:active_id>/', HistoryCreatedView.as_view(), name='history-created'),
+
 ]

@@ -2,17 +2,20 @@ import re
 
 from django.db.models import Sum, F
 from django.shortcuts import render, redirect
-from django.views.generic import TemplateView, ListView
+from django.views.generic import ListView
+from rest_framework import status
+from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from tradingview_ta import TA_Handler, Interval
 
-from myapp.forms import ActiveCreatedForm, HistoryCreatedForm
 from myapp.models import CurrencyPairsModel, ActivesModel, HistoryModel, ActionModel, ScreenerModel, SourceModel
+from myapp.serializers import HistorySerializer, ActivesSerializer
 
 
-class IndexView(TemplateView):
-    template_name = 'myapp/index.html'
-
-    def get(self, request, *args, **kwargs):
+class IndexAPIView(APIView):
+    def get(self, request):
         btc_usdt = TA_Handler(
             symbol="BTCUSDT",
             exchange='BINANCE',
@@ -31,13 +34,12 @@ class IndexView(TemplateView):
             'high_price': high,
         }
 
-        return render(request, self.template_name, context)
+        return Response(context, status=status.HTTP_200_OK)
 
 
-class HistoryView(ListView):
-    model = HistoryModel
-    template_name = 'myapp/history.html'
-
+class HistoryAPIView(ListAPIView):
+    serializer_class = HistorySerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         # Получаем текущего пользователя
@@ -46,24 +48,26 @@ class HistoryView(ListView):
         return HistoryModel.objects.filter(user_id=current_user)
 
 
-def actives_create(request):
-    if request.method == 'POST':
-        active_name = request.POST.get('active_name')
-        pair_id = request.POST.get('pair_id')
-        screener_id = None
+class ActivesCreateAPIView(CreateAPIView):
+    serializer_class = ActivesSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        active_name = serializer.validated_data.get('active_name')
+        pair_id = serializer.validated_data.get('pair_id')
         source_id = None
-        if pair_id == '1':
-            pair = CurrencyPairsModel.objects.get(pair_mame='USDT')
+        screener_id = None
+
+        if pair_id.pair_mame == 'USDT':
             screener_id = ScreenerModel.objects.get(screener_name='Crypto')
             source_id = SourceModel.objects.get(source_name='BINANCE')
-        else:
-            pass
 
         # Проверяем, существует ли актив с таким именем
         active, created = ActivesModel.objects.get_or_create(
             active_name=active_name,
             defaults={
-                'pair_id': pair,
+                'pair_id': pair_id,
                 'screener_id': screener_id,
                 'source_id': source_id,
             }
@@ -71,40 +75,38 @@ def actives_create(request):
 
         if not created:
             # Если актив уже существует, обновляем его поля, если нужно
-            active.pair_id = pair
+            active.pair_id = pair_id
             active.screener_id = screener_id
             active.source_id = source_id
             active.save()
 
-        return redirect('myapp:history_created', active_id=active.active_id)
-    else:
-        form = ActiveCreatedForm()
-    return render(request, 'myapp/actives_create.html', {'form': form})
+        headers = self.get_success_headers(serializer.data)
+        return Response({'active_id': active.active_id}, status=status.HTTP_201_CREATED, headers=headers)
 
 
-def history_created(request, active_id):
-    if request.method == "POST":
-        price = request.POST.get('price')
-        count = request.POST.get('count')
-        action_id = request.POST.get('action_id')
-        active = ActivesModel.objects.get(active_id=active_id)
+class HistoryCreatedView(APIView):
+    serializer_class = HistorySerializer
 
-        # Получаем действие по переданному action_id
-        action = ActionModel.objects.get(action_id=action_id)
+    def post(self, request, active_id):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            price = serializer.validated_data.get('price')
+            count = serializer.validated_data.get('count')
+            action_id = serializer.validated_data.get('action_id')
+            user = self.request.user
 
-        new_history = HistoryModel.objects.create(
-            user_id=request.user,
-            active_id=active,
-            price=price,
-            count=count,
-            action_id=action,
+            active_instance = ActivesModel.objects.get(pk=active_id)
 
-        )
-        new_history.save()
-        return redirect('myapp:index')
-    else:
-        form = HistoryCreatedForm()
-    return render(request, 'myapp/history_created.html', {'form': form, 'active_id': active_id})
+            new_history = HistoryModel.objects.create(
+                user_id=user,
+                active_id=active_instance,
+                price=price,
+                count=count,
+                action_id=action_id,
+            )
+            new_history.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class BreafceseListView(ListView):
@@ -127,4 +129,3 @@ class BreafceseListView(ListView):
         )
 
         return result
-
