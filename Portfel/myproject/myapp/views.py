@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 from tradingview_ta import TA_Handler, Interval
 
 from myapp.models import CurrencyPairsModel, ActivesModel, HistoryModel, ActionModel, ScreenerModel, SourceModel
-from myapp.serializers import HistorySerializer, ActivesSerializer
+from myapp.serializers import HistorySerializer, ActivesSerializer, CalculationSerializer
 
 
 class IndexAPIView(APIView):
@@ -109,15 +109,15 @@ class HistoryCreatedView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class BreafceseListView(ListView):
-    model = HistoryModel
-    template_name = 'myapp/brefcese.html'
+class CalculationsAPIListView(ListAPIView):
+    serializer_class = CalculationSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        user = self.request.user.id
-
-        result = HistoryModel.objects.filter(user_id_id=user).values(
-            'user_id_id',
+        serializer = self.serializer_class(data=request.data)
+        user_id = self.kwargs.get('user_id')
+        result = HistoryModel.objects.filter(user_id=user_id).values(
+            'active_name',
             'active_id__active_name',
             'active_id__now_price'
         ).annotate(
@@ -127,5 +127,4 @@ class BreafceseListView(ListView):
             current_value=F('active_id__now_price') * Sum(F('count')),
             profit=F('current_value') - F('value'),
         )
-
-        return result
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

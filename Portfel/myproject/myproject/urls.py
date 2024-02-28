@@ -18,7 +18,7 @@ from django.urls import path, include
 
 
 
-from myapp.views import IndexAPIView, HistoryAPIView, ActivesCreateAPIView, HistoryCreatedView
+from myapp.views import IndexAPIView, HistoryAPIView, ActivesCreateAPIView, HistoryCreatedView, CalculationsAPIListView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,5 +27,6 @@ urlpatterns = [
     path('api/history/', HistoryAPIView.as_view(), name='history-api'),
     path('api/actives/create/', ActivesCreateAPIView.as_view(), name='actives-create'),
     path('history/created/<int:active_id>/', HistoryCreatedView.as_view(), name='history-created'),
-
+    path('calculations/<int:user_id>/', CalculationsAPIListView.as_view(), name='calculations-list'),
+    path('calculations/', CalculationsAPIListView.as_view(), name='calculations-list'),
 ]

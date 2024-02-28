@@ -29,10 +29,24 @@ class SourceSerializer(serializers.ModelSerializer):
 class ActivesSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActivesModel
-        fields = ['active_name', 'pair_id',]
+        fields = ['active_name', 'pair_id_id', 'active_id']
 
 
 class HistorySerializer(serializers.ModelSerializer):
+    active_id = ActivesSerializer()
+    active_name = ActivesSerializer()
+    now_price = ActivesSerializer()
+
     class Meta:
         model = HistoryModel
-        fields = ['price', 'count', 'action_id']
+        fields = ['price', 'count', 'active_id', 'active_name', 'now_price']
+
+
+class CalculationSerializer(serializers.Serializer):
+    active_name = serializers.CharField()
+    now_price = serializers.DecimalField(max_digits=10, decimal_places=2)
+    weighted_average_price = serializers.DecimalField(max_digits=10, decimal_places=2)
+    total_count = serializers.DecimalField(max_digits=10000000, decimal_places=2)
+    value = serializers.DecimalField(max_digits=10000000, decimal_places=2)
+    current_value = serializers.DecimalField(max_digits=10000000, decimal_places=2)
+    profit = serializers.DecimalField(max_digits=10000000, decimal_places=2)
