@@ -109,22 +109,10 @@ class HistoryCreatedView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CalculationsAPIListView(ListAPIView):
+class UserActivesListView(ListAPIView):
     serializer_class = CalculationSerializer
-    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        serializer = self.serializer_class(data=request.data)
-        user_id = self.kwargs.get('user_id')
-        result = HistoryModel.objects.filter(user_id=user_id).values(
-            'active_name',
-            'active_id__active_name',
-            'active_id__now_price'
-        ).annotate(
-            weighted_average_price=Sum(F('price') * F('count')) / Sum('count'),
-            total_count=Sum('count'),
-            value=Sum(F('price') * F('count')),
-            current_value=F('active_id__now_price') * Sum(F('count')),
-            profit=F('current_value') - F('value'),
-        )
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        user_id = self.kwargs['user_id']
+        # Фильтруем объекты ActivesModel, связанные с пользователем через HistoryModel
+        return ActivesModel.objects.filter(historymodel__user_id=user_id).distinct()
